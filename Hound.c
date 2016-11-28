@@ -22,15 +22,22 @@ int convert(int i,int j){
     return N*i + j;
     }
 
- void printAllPaths(int u,int d, int path[],struct tile tiles[N*N],int path_index,int min[],int *minlen,int target)
+ void printAllPaths(int u,int d, int path[],struct tile tiles[N*N],int path_index,int min[],int *minlen,int target,int minHoundDist,int minExitDist)    //changed
  {
         int i;
         int houndToExit = tiles[target].hound_dist;
         tiles[u].selected = 1;
         path[path_index] = u;
         path_index++;
-         if(path_index>houndToExit || path_index>=(tiles[u].hound_dist-tiles[u].sourceDist+ceil(path_index/2)))
-       {
+     
+        if(tiles[u].hound_dist<=minHoundDist)                       //changed
+        {
+            minHoundDist=tiles[u].hound_dist;
+            minExitDist = path_index-1;
+        }
+     
+         if(path_index-1>houndToExit || path_index-1>=(minHoundDist-tiles[u].sourceDist+ceil(minExitDist/2)))       //changed
+         {
             path_index--;
             tiles[u].selected=0;
             return;
@@ -55,19 +62,19 @@ int convert(int i,int j){
             {
                 if( tiles[u-N].type!=1 && tiles[u-N].selected==0)
                 {
-                    printAllPaths(u-N,d,path,tiles,path_index,min,minlen,target);
+                    printAllPaths(u-N,d,path,tiles,path_index,min,minlen,target,minHoundDist,minExitDist);
                 }
                  if( tiles[u+N].type!=1 && tiles[u+N].selected==0)
                 {
-                    printAllPaths(u+N,d,path,tiles,path_index,min,minlen,target);
+                    printAllPaths(u+N,d,path,tiles,path_index,min,minlen,target,minHoundDist,minExitDist);
                 }
                  if( tiles[u-1].type!=1 && tiles[u-1].selected==0)
                 {
-                    printAllPaths(u-1,d,path,tiles,path_index,min,minlen,target);
+                    printAllPaths(u-1,d,path,tiles,path_index,min,minlen,target,minHoundDist,minExitDist);
                 }
                  if( tiles[u+1].type!=1 && tiles[u+1].selected==0)
                 {
-                    printAllPaths(u+1,d,path,tiles,path_index,min,minlen,target);
+                    printAllPaths(u+1,d,path,tiles,path_index,min,minlen,target,minHoundDist,minExitDist);
                 }
             }
 path_index--;
@@ -157,6 +164,10 @@ static void display_file(const char *file_name)
     }
 }
 int main(){
+    int c;
+    display_file("..\\Instructions.txt");
+    do {
+    N = 100;
     struct tile tiles[N*N];
     int min[1000];
     int minlen = 0;
@@ -167,6 +178,8 @@ int main(){
     int hound_start;
     char temp;
     int houndToExit;
+    int minHoundDist=IN;                                            //changed
+    int minExitDist=0;                                              //changed
     char f[100];
     char f2[100]="..\\";
     for(i=0;i<N*N;i++){
@@ -177,7 +190,6 @@ int main(){
         tiles[i].sourceDist = IN;
         }
     FILE *fp;
-    display_file("..\\Instructions.txt");
     printf("\nEnter the name of the text file you want to read : \n");
     scanf("%s",f);
     strcat(f2,f);
@@ -217,7 +229,7 @@ int main(){
 //        
 //    }
     printf("\nAll the possible paths are : \n\n");
-    printAllPaths(target,source,path,tiles,0,min,&minlen,target);
+    printAllPaths(target,source,path,tiles,0,min,&minlen,target,minHoundDist,minExitDist);   //changed
     printf("\n");
     
 //    for(i=minlen-2;i>=0;i--){
@@ -236,5 +248,8 @@ int main(){
             }
             printf("\n");
         }
+    printf("\nEnter Y to continue. Press Enter to exit.\n");
+    c = fgetc(stdin);
+    }while((c = fgetc (stdin)) != EOF && c != '\n');
     return 0;
     }
