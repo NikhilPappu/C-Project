@@ -28,47 +28,47 @@ typedef struct heapNode {
     int index;
 } heapNode;
  
-typedef struct PQ { // Structure for a priority queue. Contains a heapNode pointer and queue size.
+typedef struct PriorityQueue { // Structure for a priority queue. Contains a heapNode pointer and queue size.
     heapNode* heap;
     int size;
-} PQ;
+} PriorityQueue;
  
 void insert(heapNode aNode, heapNode* heap, int size) { /*Insert function is used to build the priority queue. It is called by the enqueue function.
  * It inserts a heapNode at the and of the heap and moves it upward using repeated swaps until it is in the right position.  
  * */
-    int idx;
-    heapNode tmp;
-    idx = size + 1;
-    heap[idx] = aNode;
-    while (heap[idx].value < heap[idx/2].value && idx > 1) {
-    tmp = heap[idx];
-    heap[idx] = heap[idx/2];
-    heap[idx/2] = tmp;
-    idx /= 2;
+    int hIndex;
+    heapNode temp;
+    hIndex = size + 1;
+    heap[hIndex] = aNode;
+    while (heap[hIndex].value < heap[hIndex/2].value && hIndex > 1) {
+    temp = heap[hIndex];
+    heap[hIndex] = heap[hIndex/2];
+    heap[hIndex/2] = temp;
+    hIndex /= 2;
     }
 }
  
-void shiftdown(heapNode* heap, int size, int idx) { /*
+void maintainHeap(heapNode* heap, int size, int hIndex) { /*
  * Called to maintain the heap property after the min(heap[1]) is extracted.
  * */
-    int cidx;        //index for child
-    heapNode tmp;
+    int chIndex;        //index for child
+    heapNode temp;
     for (;;) {
-        cidx = idx*2;
-        if (cidx > size) {
-            break;   //it has no child
+        chIndex = hIndex*2;
+        if (chIndex > size) {
+            break;   //no child
         }
-        if (cidx < size) {
-            if (heap[cidx].value > heap[cidx+1].value) {
-                ++cidx;
+        if (chIndex < size) {
+            if (heap[chIndex].value > heap[chIndex+1].value) {
+                ++chIndex;
             }
         }
         //swap if necessary
-        if (heap[cidx].value < heap[idx].value) {
-            tmp = heap[cidx];
-            heap[cidx] = heap[idx];
-            heap[idx] = tmp;
-            idx = cidx;
+        if (heap[chIndex].value < heap[hIndex].value) {
+            temp = heap[chIndex];
+            heap[chIndex] = heap[hIndex];
+            heap[hIndex] = temp;
+            hIndex = chIndex;
         } else {
             break;
         }
@@ -77,30 +77,29 @@ void shiftdown(heapNode* heap, int size, int idx) { /*
  
 heapNode removeMin(heapNode* heap, int size) {
     /*Removes the first element in the heap by swapping it with the last element and decrementing the queue size.
-     * It then calls the shiftdown function to place heap[1] in the correct place.
+     * It then calls the maintainHeap function to place heap[1] in the correct place.
      * */
-    int cidx;
-    heapNode rv = heap[1];
-    //printf("%d:%d:%dn", size, heap[1].value, heap[size].value);
+    int chIndex;
+    heapNode retVal = heap[1];
     heap[1] = heap[size];
     --size;
-    shiftdown(heap, size, 1);
-    return rv;
+    maintainHeap(heap, size, 1);
+    return retVal;
 }
-void enqueue(heapNode node, PQ *q) {
+void enqueue(heapNode node, PriorityQueue *q) {
     //Constrcuts the queue by calling the insert function and incrementing size.
     insert(node, q->heap, q->size);
     ++q->size;
 }
  
-heapNode dequeue(PQ *q) {
+heapNode dequeue(PriorityQueue *q) {
     //removes the first element(min) in the heap and decrements the size.
-   heapNode rv = removeMin(q->heap, q->size);
+   heapNode retVal = removeMin(q->heap, q->size);
    --q->size;
-   return rv; 
+   return retVal; 
 }
  
-void initQueue(PQ *q, int n) {
+void initQueue(PriorityQueue *q, int n) {
 //initialize the queue by creating a heap by dynamically allocating memory for n heap nodes
    q->size = 0;
    q->heap = (heapNode*)malloc(sizeof(heapNode)*(n+1));
@@ -180,7 +179,7 @@ int dijkstra(struct tile tiles[2*N*N],int source,int target){
     int target2 = 2*N*N-1;
     start = source;
     tiles[start].dist = 0;
-    PQ q;
+    PriorityQueue q;
     heapNode hn;
     initQueue(&q, 2*N*N); // Initialize the priority queue.
     
