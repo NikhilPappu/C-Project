@@ -1,0 +1,23 @@
+                                      _____Instructions_____
+                                      
+This program outputs the optimal path (one which takes the least time) given a tile based maze.
+The mazes must be given as input through text files. Each text file must contain a number specifying
+the length of the square grid followed by the maze.
+
+Mazes can contain the following characters :
+
+'S' and 'E' stand for start and exit locations respectively.
+
+'X' represents a wall which is an impassable barrier.
+
+'_' represents free tile. It takes 1 sec to move from one free tile to the other.
+
+'g' represents a gum. It slows you down to half the speed for the next 2 moves.
+    Gums do not stack ie going through multiple ones only refreshes the duration.
+    
+'p' represents a portal. There can be 2 of these on a maze. Activating one will
+    teleport you into another in 1 sec. The player can choose to activate it if 
+    it helps him to minimize the time.
+
+In the final optimal path '_' which are traversed are replaced with '.' while
+portals and gums ('p' and 'g') are capitalized if they are traversed.

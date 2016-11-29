@@ -1,0 +1,23 @@
+                                      _____Instructions_____
+Problem : 
+The player has to escape the maze by taking a valid path from his starting 
+location to an exit location while a hound tries to catch him. 
+A valid path  is one in which the player can escape for any possible path of the hound. 
+The hound can choose to either directly go to the exit or search for the player. 
+A path is not valid if the hound can either reach the exit before him or can catch 
+him before he reaches the exit. 
+If the hound lands on a tile which the player had previously been on then it catches 
+his scent and follows him with twice its initial speed.
+
+The mazes must be given as input through text files.Each text file must contain a number 
+specifying the length of the square grid followed by the maze.
+
+Mazes can contain the following characters :
+
+'S' and 'E' stand for start and exit locations respectively.
+'X' represents a wall which is an impassable barrier.
+'H' represents the starting location of the hound.
+
+The program first prints all the valid paths in the form of row and column 
+coordinates of tiles on the path (row,column).
+It then shows the shortest valid path on the maze by indicating the path with the character '.'.
